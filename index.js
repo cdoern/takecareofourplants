@@ -5,11 +5,9 @@ counter = 0;
 var conlist ='';
 var postlist = [];
 var theid = '';
-var wifi = require('node-wifi');
-var wifiscanner = require("wifiscanner");
 var scanner = wifiscanner();
 var des = '';
-var day = 'Sunday';
+var day = 'INITIAL DAY OF WEEK WHEN STARTING CODE';
 var pastdesmessage = 'no week has passed yet!';
 var deslist = [];
 var timebegin= '';
@@ -203,9 +201,6 @@ function checkWifi(){
         timeend = '';
     }
     else{
-    //wifi.init({
-       // iface : null
-   // });
     scanner.scan(function(err, networks) {
         if (err) {
             console.log(err);
