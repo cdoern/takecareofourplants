@@ -213,7 +213,7 @@ function checkWifi(){
         else{
             success = false;
             for(var i = 0; i < networks.length; i++){
-                if(networks[i].ssid === 'SuperRouter'){
+                if(networks[i].ssid === 'WIFINAMEHERE'){
                   success = true;
                 }
             }
