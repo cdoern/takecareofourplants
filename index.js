@@ -1,3 +1,10 @@
+// libraries to install: NOT ACTUAL NAMES FOR DOWNLOADING PLEASE LOOK THESE UP FIRST
+// node js wifiscanner
+// moment.js
+// the link on the website informs you how to install dotenv, snoowrap and snoostorm
+// johnny-five
+// all node libraires can be installed by saying "npm install **library name**"
+
 require('dotenv').config();
 var five = require('johnny-five');
 var sleep = require('system-sleep');
@@ -85,7 +92,7 @@ if(checkforval(comment.body) == true && comment.body != "Yes votes | No votes \n
     });
 }); 
 }
-else if(checkforval(comment.body) == false && comment.body != "Yes votes | No votes \n -----------|------------ \n 0|0"){ 
+else if(checkforval(comment.body) == false && comment.body != "Yes votes | No votes \n -----------|------------- \n 0|0"){ 
     r.getNewComments('takecareofourplants', {limit: 1}).then(function (posts){
         posts.forEach(function (post){
       if(postlist.includes(post.link_title)){
@@ -97,7 +104,7 @@ else if(checkforval(comment.body) == false && comment.body != "Yes votes | No vo
     counter-=1;
     counter3+=1;
     comment.reply('Thanks for your vote against watering the plant! votes = ' + counter);
-    r.getComment(theid).edit("Yes votes | No votes \n -----------|------------ \n" + counter2 +"|"+counter3)
+    r.getComment(theid).edit("Yes votes | No votes \n -----------|------------- \n" + counter2 +"|"+counter3)
           }
           else if(listcheck2(comment.author.name) == false){
               console.log("repeat voter");
@@ -138,9 +145,9 @@ function checkforval(x) {
             editmessage(des);
             day = moment().format('dddd');
             r.getSubreddit('takecareofourplants')
-            .submitSelfpost({title: 'Hello! Today is ' + moment().format('LL') + '. Would you like to water Gordon today?', text: 'Hello! Gordon **WAS** watered last cycle. please check the soil moisture on the website! http://cdoern.com/ you can currently say **yes, prost, sí, and aye** to water the plant and **no, nein, and not on your nelly** to not water the plant. These **ARE NOT** case sensetive! **ANY** of these words can be placed throughout a sentence and the bot will register the vote!'+ '\n ' + '\n **last week\'s decisions**: ' +  pastdesmessage + '\n \n **This week\'s decisions so far**:' + message})
+            .submitSelfpost({title: 'Hello! Today is ' + moment().format('LL') + '. Would you like to water PLANT NAME today?', text: 'Hello! Gordon **WAS** watered last cycle. please check the soil moisture on the website! http://cdoern.com/ you can currently say **yes, prost, sí, and aye** to water the plant and **no, nein, and not on your nelly** to not water the plant. These **ARE NOT** case sensetive! **ANY** of these words can be placed throughout a sentence and the bot will register the vote!'+ '\n ' + '\n **last week\'s decisions**: ' +  pastdesmessage + '\n \n **This week\'s decisions so far**:' + message})
              .sticky()
-             .reply('Yes votes | No votes \n -----------|------------ \n 0|0')
+             .reply('Yes votes | No votes \n -----------|------------- \n 0|0')
              sendreminders();
              sleep(5000);
     }
@@ -155,9 +162,9 @@ function checkforval(x) {
             day = moment().format('dddd');
             console.log('message for no sent');
           r.getSubreddit('takecareofourplants')
-       .submitSelfpost({title: 'Hello! Today is ' + moment().format('LL') + '. Would you like to water Gordon today?', text: 'Hello! Gordon was **NOT** watered last cycle. please check the soil moisture on the website! http://cdoern.com/ you can currently say **yes, prost, sí, and aye** to water the plant and **no, nein, and not on your nelly** to not water the plant. These **ARE NOT** case sensetive! **ANY** of these words can be placed throughout a sentence and the bot will register the vote!' + '\n ' + '\n **last week\'s decisions**: ' + pastdesmessage  + '\n \n **This week\'s decisions so far**:' + message})
+       .submitSelfpost({title: 'Hello! Today is ' + moment().format('LL') + '. Would you like to water PLANT NAME today?', text: 'Hello! Gordon was **NOT** watered last cycle. please check the soil moisture on the website! http://cdoern.com/ you can currently say **yes, prost, sí, and aye** to water the plant and **no, nein, and not on your nelly** to not water the plant. These **ARE NOT** case sensetive! **ANY** of these words can be placed throughout a sentence and the bot will register the vote!' + '\n ' + '\n **last week\'s decisions**: ' + pastdesmessage  + '\n \n **This week\'s decisions so far**:' + message})
        .sticky()
-       .reply('Yes votes | No votes \n -----------|------------ \n 0|0')
+       .reply('Yes votes | No votes \n -----------|------------- \n 0|0')
        sendreminders();
        sleep(5000);
         }
