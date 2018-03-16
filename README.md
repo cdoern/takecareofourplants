@@ -1,2 +1,2 @@
 # takecareofourplants
-code for the reddit bots on r/takecareofourplants on reddit
+code for the reddit bots on r/takecareofourplants 
