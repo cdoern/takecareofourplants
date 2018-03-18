@@ -5,6 +5,11 @@
 // johnny-five
 // all node libraires can be installed by saying "npm install **library name**"
 
+clientid ="CLIENTID";
+clientsec="CLIENTSECRET"; 
+user="ACCOUNTUSER";
+pass="ACCOUNTPASS";
+
 require('dotenv').config();
 var five = require('johnny-five');
 var sleep = require('system-sleep');
