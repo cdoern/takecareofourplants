@@ -1,39 +1,67 @@
-clientid ="place bot client ID here";  
-clientsec="Place bot client secret here"; 
-user="username of bot account"    
-pass="pass of bot account";  
+//this is the exact code I use for my bot minus the credentials and the webvoting aspects. this requires you have a reddit bot and a pubnub account. pubnub function with key information can be found on line 771. PM u/cdoern01 on reddit or open a pull request here on github if you have questions.
+
+clientid ="bot client id";  
+clientsec="bot client sec";  
+user="bot user name"    
+pass="bot pass";  
+
 
 require('dotenv').config();
 var five = require('johnny-five');
 var sleep = require('system-sleep');
 counter = 0;
+var fortable = [];
+var no = 0;
+var yes = 0;
+var mysql = require('mysql');
+
+//next 6 lines are for web voting if you want to implement 
+/*var con = mysql.createConnection({
+  host: "db IP adress",
+  user: "db user",
+  password: "db user pass!",
+  database: "db name"
+}); */
 var fs = require('fs');
 var daily = '';
+var yestotal = 0;
+var tab = '';
+var nototal= 0;
 var postmessage = '';
-var parseInt = require('parse-int');
 var soilm = 0;
+var alreadydone = 0;
+var soilm2 = 0;
 var thetemp=0;
+var desbool = 'true';
+var today ='';
+var tempout = 0;
+var dotheloop = true;
 var messagesoil = '';
 var count = 0;
 var temp = 0;
+var dailyp = '8rinyy';
 var countstring ='';
 var conlist ='';
-var postlist = [''];
+var postlist = ['Voting down for tonight -- adding two things'];
 var theid = '';
 var wifi = require('node-wifi');
 var wifiscanner = require("wifiscanner");
 var scanner = wifiscanner();
 var des = '';
-var day = '';
-var pastdesmessage = '';
+var day = 'Tuesday';
+var pastdesmessage = 'no data here yet';
 var deslist = [];
 var timebegin= '';
+var tabone = '';
+var tabtwo = '';
+var tabthree = '';
 var postdaily ='';
 var weeklydes = [];
 var timeend = '';
 var voterlist = ['cdoern01'];
 var descount = 1;
-var counter5 = 0;
+var counter5 =0;
+var countwifi = 0;
 var message = '';
 var dailyvoterlist = [];
 var wvar = 1;
@@ -43,8 +71,8 @@ counter4 =0;
 counter3 = 0;
 var getTheWeather = require("get-the-weather");
 var ports = [
-    { id: "A", port: "/dev/ttyACM0" },
-    { id: "B", port: "/dev/ttyACM1" }
+{ id: "A", port: "/dev/ttyACM1" },
+ { id: "B", port: "/dev/ttyACM0" }
   ];
 var moment = require('moment');
 new five.Boards(ports).on("ready", function() {
@@ -52,25 +80,30 @@ var pin = new five.Pin({
     pin: "A2",
     board: this.byId("B")
   });
-  var pin2 = new five.Pin({
-    pin: "A0",
-    board: this.byId("B")
-  });
+  
 var led = new five.Led({
         pin: 13,
         board: this.byId("A")
       });
-setInterval(checktime, 1000);
-setInterval(checkWifi, 5000);
+      //again this is for connection to the Database for webvoting
+    //  con.connect(function(err) {
+    //    if (err) throw err;
+    //    console.log("Connected!");
+    //  });
+     
 setInterval(soil, 1200000);
+setInterval(update, 300000);
+setInterval(checktime, 1000);
+// setInterval(checkWifi, 5000);
 setInterval(pubnub, 3000);
+//for web voting
+//setInterval(updateyes, 60000);
 setInterval(files, 1000);
+//for web voting
+//setInterval(checkweb, 1000);
 pin.read(function(error, value) {
-    soilm=(((value-540)/(240-540))*100);
+    soilm=(((value-540)/(260-540))*100);
    soilm=Math.round(soilm);
-})
-pin2.read(function(error, value) {
- temp = value;
 })
 const Snoowrap = require('snoowrap');
 const Snoostorm = require('snoostorm');
@@ -113,7 +146,48 @@ if(comment.body == "Yes votes | No votes \n -----------|------------ \n 0|0"){
             console.log(postlist);
 });
     });
+   dailyp = comment.link_id;
+    console.log(dailyp);
+    dailyp = dailyp.substring(3);
+    fs.appendFile('dailypostid.txt','\n'+dailyp, function (err) {
+        if (err) throw err;
+        console.log('Updated!');
+      });
 }
+
+    if(comment.body == "post"){
+        r.getNewComments('takecareofourplants', {limit: 1}).then(function(posts){
+            posts.forEach(function (post){
+            if(post.link_title == "test and manual post"){
+            if(counter > 0){
+                r.getSubreddit('takecareofourplants')
+                .submitSelfpost({title: 'Hello! Today is ' + moment().format('LL') + '. Would you like to water the Garden today?', text: 'Hello! the *Jeff Memorial Internet Garden* **WAS** watered last cycle. \n The time is currently: **' + moment().format('LTS')+ '** in New York. \n \n The Soil Moisture for **GORDON** is currently: **' + soilm + '%** \n \n \n ***** \n please check the soil moisture for Gordon on the stickied post titled [Soil Moisture](https://www.reddit.com/r/takecareofourplants/comments/8csxtn/soil_moisture/) or on [my website](https://cdoern.com/) If you received a voting reminder and would like to be taken off of the PM list, go to the post titled, [List removal request post](https://www.reddit.com/r/takecareofourplants/comments/8764sg/list_removal_request_post/) and comment **remove from list**. \n ***** \n You can currently say **yes, prost, sí, and aye** to water the plant and **no, nein, nyet, and not on your nelly** to not water the plant. These **ARE NOT** case sensetive! **ANY** of these words can be placed throughout a sentence and the bot will register the vote!'+ '\n ***** ' + '\n **Weekly Trend** \n \n \n' +  tabone + '\n' + tabtwo +'\n' +tabthree})          
+                .sticky()
+                 .reply('Yes votes | No votes \n -----------|------------ \n 0|0')
+                 sendreminders();
+                 sleep(5000);
+            }
+            else if(counter <= 0){
+                r.getSubreddit('takecareofourplants')
+                .submitSelfpost({title: 'Hello! Today is ' + moment().format('LL') + '. Would you like to water the Garden today?', text: 'Hello! the *Jeff Memorial Internet Garden* **WAS NOT** watered last cycle. \n The time is currently: **' + moment().format('LTS')+ '** in New York. \n \n The Soil Moisture for **GORDON** is currently: **' + soilm + '%** \n \n \n ***** \n please check the soil moisture for Gordon on the stickied post titled [Soil Moisture](https://www.reddit.com/r/takecareofourplants/comments/8csxtn/soil_moisture/) or on [my website](https://cdoern.com/) If you received a voting reminder and would like to be taken off of the PM list, go to the post titled, [List removal request post](https://www.reddit.com/r/takecareofourplants/comments/8764sg/list_removal_request_post/) and comment **remove from list**. \n ***** \n You can currently say **yes, prost, sí, and aye** to water the plant and **no, nein, nyet, and not on your nelly** to not water the plant. These **ARE NOT** case sensetive! **ANY** of these words can be placed throughout a sentence and the bot will register the vote!'+ '\n ***** ' + '\n **Weekly Trend** \n \n \n' +  tabone + '\n' + tabtwo +'\n' +tabthree})          
+                .sticky()
+                 .reply('Yes votes | No votes \n -----------|------------ \n 0|0')
+                 sendreminders();
+                 sleep(5000);
+            }
+        
+    }
+})
+        });
+    }
+    
+//testing webvoting
+// var sql = "INSERT INTO testtable (day, des) VALUES ?";
+   // con.query(sql, [values], function (err, result) {
+      //  if (err) throw err;
+      //  console.log("Number of records inserted: " + result.affectedRows);
+    //  });
+
 if(comment.body == "remove from list"){
     r.getNewComments('takecareofourplants', {limit: 1}).then(function(posts){
         posts.forEach(function (post){
@@ -129,7 +203,45 @@ if(comment.body == "remove from list"){
     })
 }
  if(comment.body === 'test'){
-    comment.reply('working');
+     tabone = '';
+     tabtwo = '';
+     tabthree = '';
+    var len = fortable.length;
+    if(len > 7){
+        len = 7;
+    }
+    var num = fortable.length;
+    for(var i = len; i >= 1;i--){
+       var lastday = moment().subtract(i, 'days').format('dddd');
+       tabone = tabone + (lastday + '| ');
+    }
+    fs.writeFile('t1.txt',tabone,function(err){
+        if (err) throw err;
+        console.log('Updated!'); 
+      });
+ //   tab=tab+ '\n\n';
+    tabtwo = tabtwo + '--';
+    for(var j = 0; j <= len; j++){
+       tabtwo = tabtwo + ('|--');
+   }
+   fs.writeFile('t2.txt',tabtwo,function(err){
+    if (err) throw err;
+    console.log('Updated!'); 
+  });
+ //  tab= tab +'\n\n';
+   tabthree = tabthree + fortable[num-7];
+    for(var i = (num-6); i <= num; i++){
+        tabthree = tabthree + (' | ' + fortable[i]);
+    } 
+    fs.writeFile('t3.txt',tabthree,function(err){
+        if (err) throw err;
+        console.log('Updated!'); 
+      });
+    fs.writeFile('table.txt',tab,function(err){
+        if (err) throw err;
+        console.log('Updated!'); 
+      });
+  
     }
 if(checkforval(comment.body) == true && comment.body != "Yes votes | No votes \n -----------|------------ \n 0|0") {
     r.getNewComments('takecareofourplants', {limit: 1}).then(function (posts){
@@ -220,7 +332,29 @@ function checkforval(x) {
             messagesoil = ("\n \n" + "- "  +"__"+time+"__" +": "+ soilm+"%") + messagesoil
             r.getSubmission('8csxtn').edit(messagesoil)
         }
-        if(moment().format('LTS') === '10:35:00 AM' && counter > 0){
+        if(moment().format('LTS') === '7:00:00 AM' && counter > 0){
+
+            //for webvoting
+          //      var sql = "DELETE FROM yesvotes WHERE voting_message = 'another yes vote'";
+           //     con.query(sql, function (err, result) {
+           //       if (err) throw err;
+           //       console.log("Number of records deleted: " + result.affectedRows);
+          //      });
+          //      var sql = "DELETE FROM novotes WHERE voting_message = 'another no vote'";
+          //      con.query(sql, function (err, result) {
+          //        if (err) throw err;
+            //      console.log("Number of records deleted: " + result.affectedRows);
+         //       });
+         //     yestotal= 0;
+          //    fs.appendFile('yestotal.txt','\n'+yestotal, function (err) {
+      //          if (err) throw err;
+       //         console.log('Updated!');
+       //       });
+         //     nototal = 0;
+          //    fs.appendFile('nototal.txt','\n'+nototal, function (err) {
+          //      if (err) throw err;
+          //      console.log('Updated!');
+          //    });
             counter = 0;
             fs.appendFile('count.txt','\n'+counter, function (err) {
                 if (err) throw err;
@@ -238,10 +372,15 @@ function checkforval(x) {
               });
             postlist = [];
             led.on();
-           sleep(25000);
+           sleep(16000);
            led.off();
             dailyvoterlist = [];
             des = 'yes';
+            desbool = 'true';
+            fs.appendFile('desbool.txt','\n'+desbool, function (err) {
+                if (err) throw err;
+                console.log('Updated!');
+              });
             editmessage();
             day = moment().format('dddd');
             fs.appendFile('day.txt','\n'+day, function (err) {
@@ -249,13 +388,35 @@ function checkforval(x) {
                 console.log('Updated!');
               });
             r.getSubreddit('takecareofourplants')
-            .submitSelfpost({title: 'Hello! Today is ' + moment().format('LL') + '. Would you like to water Gordon today?', text: 'Hello! Gordon **WAS** watered last cycle. \n The time is currently: **' + moment().format('LTS')+ '** in New York. \n The Soil Moisture is currently: ' + soilm + '% and it is ' + temp + ' degrees indoors \n ***** \n please check the soil moisture on the stickied post titled **Soil Moisture**: https://www.reddit.com/r/takecareofourplants/comments/8csxtn/soil_moisture/. \n If you received a voting reminder and would like to be taken off of the PM list, go to the post titled, **List removal request post** and comment **remove from list**. \n ***** \n You can currently say **yes, prost, sí, and aye** to water the plant and **no, nein, nyet, and not on your nelly** to not water the plant. These **ARE NOT** case sensetive! **ANY** of these words can be placed throughout a sentence and the bot will register the vote!'+ '\n ***** ' + '\n' +  pastdesmessage + '\n \n **This week\'s decisions so far**:' + message})
+            .submitSelfpost({title: 'Hello! Today is ' + moment().format('LL') + '. Would you like to water the Garden today?', text: 'Hello! the *Jeff Memorial Internet Garden* **WAS** watered last cycle. \n The time is currently: **' + moment().format('LTS')+ '** in New York. \n \n The Soil Moisture for **GORDON** is currently: **' + soilm + '%** \n \n \n ***** \n please check the soil moisture for Gordon on the stickied post titled [Soil Moisture](https://www.reddit.com/r/takecareofourplants/comments/8csxtn/soil_moisture/) or on [my website](https://cdoern.com/) If you received a voting reminder and would like to be taken off of the PM list, go to the post titled, [List removal request post](https://www.reddit.com/r/takecareofourplants/comments/9i8trd/list_removal_request_post/) and comment **remove from list**. \n ***** \n You can currently say **yes, prost, sí, and aye** to water the plant and **no, nein, nyet, and not on your nelly** to not water the plant. These **ARE NOT** case sensetive! **ANY** of these words can be placed throughout a sentence and the bot will register the vote!'+ '\n ***** ' + '\n **Weekly Trend** \n \n \n' +  tabone + '\n' + tabtwo +'\n' +tabthree})          
             .sticky()
              .reply('Yes votes | No votes \n -----------|------------ \n 0|0')
              sendreminders();
              sleep(5000);
     }
-        else if(moment().format('LTS') === '10:35:00 AM' && counter <= 0){
+        else if(moment().format('LTS') === '7:00:00 AM' && counter <= 0){
+
+            //for webvoting
+             //   var sql = "DELETE FROM yesvotes WHERE voting_message = 'another yes vote'";
+              //  con.query(sql, function (err, result) {
+              //    if (err) throw err;
+              //    console.log("Number of records deleted: " + result.affectedRows);
+              //  });
+            //     var sql = "DELETE FROM novotes WHERE voting_message = 'another no vote'";
+             //   con.query(sql, function (err, result) {
+            //      if (err) throw err;
+            //      console.log("Number of records deleted: " + result.affectedRows);
+           //     });
+          //    yestotal= 0;
+             // fs.appendFile('yestotal.txt','\n'+yestotal, function (err) {
+             //   if (err) throw err;
+             //   console.log('Updated!');
+           //   });
+          //    nototal = 0;
+          //    fs.appendFile('nototal.txt','\n'+nototal, function (err) {
+          //      if (err) throw err;
+         //       console.log('Updated!');
+        //      });
             counter = 0;
             fs.appendFile('count.txt','\n'+counter, function (err) {
                 if (err) throw err;
@@ -274,6 +435,11 @@ function checkforval(x) {
            postlist = [];
            dailyvoterlist = [];
             des = 'no'
+            desbool = 'false';
+            fs.appendFile('desbool.txt','\n'+desbool, function (err) {
+                if (err) throw err;
+                console.log('Updated!');
+              });
             editmessage();
             day = moment().format('dddd');
             fs.appendFile('day.txt','\n'+day, function (err) {
@@ -282,7 +448,7 @@ function checkforval(x) {
               });
             console.log('message for no sent');
           r.getSubreddit('takecareofourplants')
-          .submitSelfpost({title: 'Hello! Today is ' + moment().format('LL') + '. Would you like to water Gordon today?', text: 'Hello! Gordon **WAS NOT** watered last cycle. \n The time is currently: **' + moment().format('LTS')+ '** in New York. \n The Soil Moisture is currently: ' + soilm + '% and it is ' + temp + ' degrees indoors \n ***** \n please check the soil moisture on the stickied post titled **Soil Moisture**: https://www.reddit.com/r/takecareofourplants/comments/8csxtn/soil_moisture/. \n If you received a voting reminder and would like to be taken off of the PM list, go to the post titled, **List removal request post** and comment **remove from list**. \n ***** \n You can currently say **yes, prost, sí, and aye** to water the plant and **no, nein, nyet, and not on your nelly** to not water the plant. These **ARE NOT** case sensetive! **ANY** of these words can be placed throughout a sentence and the bot will register the vote!'+ '\n ***** ' + '\n' +  pastdesmessage + '\n \n **This week\'s decisions so far**:' + message})
+          .submitSelfpost({title: 'Hello! Today is ' + moment().format('LL') + '. Would you like to water the Garden today?', text: 'Hello! the *Jeff Memorial Internet Garden* **WAS NOT** watered last cycle. \n The time is currently: **' + moment().format('LTS')+ '** in New York. \n \n The Soil Moisture for **GORDON** is currently: **' + soilm + '%** \n \n \n ***** \n please check the soil moisture for Gordon on the stickied post titled [Soil Moisture](https://www.reddit.com/r/takecareofourplants/comments/8csxtn/soil_moisture/) or on [my website](https://cdoern.com/) If you received a voting reminder and would like to be taken off of the PM list, go to the post titled, [List removal request post](https://www.reddit.com/r/takecareofourplants/comments/9i8trd/list_removal_request_post/) and comment **remove from list**. \n ***** \n You can currently say **yes, prost, sí, and aye** to water the plant and **no, nein, nyet, and not on your nelly** to not water the plant. These **ARE NOT** case sensetive! **ANY** of these words can be placed throughout a sentence and the bot will register the vote!'+ '\n ***** ' + '\n **Weekly Trend** \n \n \n' + tabone + '\n' + tabtwo +'\n' +tabthree})          
           .sticky()
        .reply('Yes votes | No votes \n -----------|------------ \n 0|0')
        sendreminders();
@@ -301,71 +467,88 @@ function checkforval(x) {
         });
     });
 }
-function editmessage(){
-    if(descount == 8){
-        pastdesmessage = message;
-        fs.unlink('pasttrend.txt', function (err) {
-            if (err) throw err;
-            console.log('File deleted!');
-          });
-          fs.writeFile('pasttrend.txt','**Decisions for last week:**\n', function (err) {
-              if (err) throw err;
-              console.log('Updated!');
-            });
-          fs.appendFile('pasttrend.txt',pastdesmessage, function (err) {
-            if (err) throw err;
-            console.log('Updated!');
-          });
-        message = ("- " + "__"+day+"__" + ": " + des);
-        descount = 1; 
-        fs.writeFile('desc.txt','\n'+descount, function (err) {
-            if (err) throw err;
-            console.log('Updated!');
-          });
-        deslist = [];
-        console.log(message);
-        fs.unlink('trend.txt', function (err) {
-          if (err) throw err;
-          console.log('File deleted!');
-        });
-        fs.writeFile('trend.txt',' \n WEEKLY TREND! \n', function (err) {
-            if (err) throw err;
-            console.log('Updated!');
-          });
-        fs.appendFile('trend.txt',message, function (err) {
-          if (err) throw err;
-          console.log('Updated!');
-        });
-        var text = fs.readFileSync("trend.txt").toString('utf-8');
-        var textByLine = text.split("\n")
-        console.log(textByLine);
-        message= '';
-        textByLine.forEach(function(entry) {
-     message = message + '\n'+entry;
-    
-   
-})
-    }
-    else{
-var tempmess = ("\n" + "- "  +"__"+day+"__" +": "+ des);
-fs.appendFile('trend.txt',tempmess, function (err) {
-    if (err) throw err;
-    console.log('Updated!');
-  });
-message = message + ("\n" + "- "  +"__"+day+"__" +": "+ des);
-descount++;
-fs.writeFile('desc.txt','\n'+descount, function (err) {
-    if (err) throw err;
-    console.log('Updated!');
-  });
-deslist.push(des);
-console.log(message);
-    }
 
+
+function editmessage(){
+    var tabone = '';
+    var tabtwo = '';
+    var tabthree = '';
+    fs.unlinkSync('t1.txt', function (err) {
+        if (err) throw err;
+        console.log('File deleted!');
+      });
+      fs.unlink('t2.txt', function (err) {
+        if (err) throw err;
+        console.log('File deleted!');
+      });
+      fs.unlinkSync('t3.txt', function (err) {
+        if (err) throw err;
+        console.log('File deleted!');
+      });
+    if(descount>=7){
+    fortable.shift();
+    fortable.forEach(function(entry) {
+        fs.appendFile('trend.txt','\n'+entry, function (err) {
+            if (err) throw err;
+            console.log('Updated!');
+          });  
+    });
+    }
+    fortable.push(des);
+    var temps = '-'+des;
+     var len = fortable.length;
+     if(len > 7){
+        len = 7;
+    }
+    var num = fortable.length;
+    for(var i = len; i >= 1;i--){
+        var lastday = moment().subtract(i, 'days').format('dddd');
+        tabone = tabone + (lastday + '| ');
+     }
+     fs.writeFile('t1.txt',tabone,function(err){
+         if (err) throw err;
+         console.log('Updated!'); 
+       });
+  //   tab=tab+ '\n\n';
+     tabtwo = tabtwo + '--';
+     for(var j = 0; j <= len; j++){
+        tabtwo = tabtwo + ('|--');
+    }
+    fs.writeFile('t2.txt',tabtwo,function(err){
+     if (err) throw err;
+     console.log('Updated!'); 
+   });
+  //  tab= tab +'\n\n';
+    tabthree = tabthree + fortable[num-7];
+     for(var i = (num-6); i <= num; i++){
+         tabthree = tabthree + (' | ' + fortable[i]);
+     } 
+     fs.writeFile('t3.txt',tabthree,function(err){
+         if (err) throw err;
+         console.log('Updated!'); 
+       });
+     fs.appendFile('trend.txt','\n'+temps, function (err) {
+        if (err) throw err;
+        console.log('Updated!');
+      });
+      fs.unlink('table.txt', function (err) {
+        if (err) throw err;
+        console.log('File deleted!');
+      });
+      fs.writeFile('table.txt',tab,function(err){
+        if (err) throw err;
+        console.log('Opened!'); 
+      });
+      descount++;
+      fs.writeFile('desc.txt','\n'+descount,function(err){
+        if (err) throw err;
+        console.log('Updated!'); 
+      });
+      
 }
+
 function checkWifi(){
-    var success = true;
-    if (wvar == 1 && timebegin != ''){
+    if (wvar == 1 && timebegin != '' && countwifi >= 24){
         sleep(10000);
         timeend = moment().format('LTS');
         console.log('TIME BEGIN: '+timebegin+' TIME END: ' +timeend)
@@ -374,30 +557,32 @@ function checkWifi(){
         wifidownpost();
         timebegin = '';
         timeend = '';
+        countwifi = 0;
     }
     else{
     scanner.scan(function(err, networks) {
         if (err) {
             console.log(err);
         }
-        else{
             success = false;
             for(var i = 0; i < networks.length; i++){
                 if(networks[i].ssid === 'SuperRouter'){
                   success = true;
                 }
             }
-            if(success == false){
+            if(success == false && alreadydone != 1){
                 console.log('no wifi');
                 wvar = 0;
                 timebegin = moment().format('LTS');
+                alreadydone = 1;
             }
-            else{
+            if(alreadydone == 1){
+                    countwifi++;
+            }
+            else if(success == true){
                 console.log('wifi');
                 wvar = 1;
             }
-
-        }
     })
 }
 }
@@ -452,7 +637,7 @@ else{
 function soil(){
     var time = moment().format('lll');
     console.log(soilm);
-     messagesoil = ("\n \n" + "- "  +"__"+time+"__" +": "+ soilm+"% -- "+temp+" degrees indoors") + messagesoil;
+     messagesoil = ("\n \n" + "- "  +"__"+time+"__" +": "+ soilm+"%") + messagesoil;
      r.getSubmission('8csxtn').edit(messagesoil)
     }
     function files(){
@@ -462,7 +647,7 @@ function soil(){
         textByLine.forEach(function(entry) {
          counter = entry;
           });
-          console.log(counter);
+         
           voterlist=[];
           var text = fs.readFileSync("people.txt").toString('utf-8');
           var textByLine = text.split("\n")
@@ -470,35 +655,35 @@ function soil(){
           textByLine.forEach(function(entry) {
           voterlist.push(entry);
             });
-            console.log(voterlist);
+        
             var text = fs.readFileSync("post.txt").toString('utf-8');
             var textByLine = text.split("\n")
             console.log(textByLine);
             textByLine.forEach(function(entry) {
              postdaily = entry;
               });
-              console.log(postdaily);
+             
               var text = fs.readFileSync("comments.txt").toString('utf-8');
               var textByLine = text.split("\n")
               console.log(textByLine);
               textByLine.forEach(function(entry) {
                theid = entry;
                 });
-                console.log(theid);
+               
                 var text = fs.readFileSync("count2.txt").toString('utf-8');
                 var textByLine = text.split("\n")
                 console.log(textByLine);
                 textByLine.forEach(function(entry) {
                  counter2 = entry;
                   });
-                  console.log(counter2);
+                  
                   var text = fs.readFileSync("count3.txt").toString('utf-8');
                   var textByLine = text.split("\n")
                   console.log(textByLine);
                   textByLine.forEach(function(entry) {
                    counter3 = entry;
                     });
-                    console.log(counter3);
+                   
                     nomessage=[];
                     var text = fs.readFileSync("nomessage.txt").toString('utf-8');
                   var textByLine = text.split("\n")
@@ -506,16 +691,18 @@ function soil(){
                   textByLine.forEach(function(entry) {
                    nomessage.push(entry);
                     });
-                    console.log(nomessage);
+                   
                   weeklydes = [];
                     var text = fs.readFileSync("trend.txt").toString('utf-8');
                     var textByLine = text.split("\n")
                     console.log(textByLine);
                     message = '';
+                    fortable = [];
                     textByLine.forEach(function(entry) {
+                    fortable.push(entry);
                      message = message + '\n'+entry;
                       });
-                      console.log(message);
+                      
                       var text = fs.readFileSync("pasttrend.txt").toString('utf-8');
                       var textByLine = text.split("\n")
                       console.log(textByLine);
@@ -523,28 +710,69 @@ function soil(){
                       textByLine.forEach(function(entry) {
                        pastdesmessage = pastdesmessage + '\n'+entry;
                         });
-                        console.log(pastdesmessage);
+                       
                         var text = fs.readFileSync("desc.txt").toString('utf-8');
                         var textByLine = text.split("\n")
                         console.log(textByLine);
                         textByLine.forEach(function(entry) {
                          descount = entry;
                           });
-                          console.log(descount);
+                        
                           var text = fs.readFileSync("day.txt").toString('utf-8');
                           var textByLine = text.split("\n")
                           console.log(textByLine);
                           textByLine.forEach(function(entry) {
                            day = entry;
                             });
-                            console.log(day);
+                          
+                            var text = fs.readFileSync("dailypostid.txt").toString('utf-8');
+                            var textByLine = text.split("\n")
+                            console.log(textByLine);
+                            textByLine.forEach(function(entry) {
+                             dailyp = entry;
+                              });
+                              var text = fs.readFileSync("t1.txt").toString('utf-8');
+                              tabone = text;
+                              console.log(tabone);
+                              var text = fs.readFileSync("t2.txt").toString('utf-8');
+                              tabtwo = text;
+                              console.log(tabtwo);
+                              var text = fs.readFileSync("t3.txt").toString('utf-8');
+                              tabthree = text;
+                              console.log(tabthree);
+                             
+                              var text = fs.readFileSync("desbool.txt").toString('utf-8');
+                            var textByLine = text.split("\n")
+                            console.log(textByLine);
+                            textByLine.forEach(function(entry) {
+                             desbool = entry;
+                              });
+                             
+                              var text = fs.readFileSync("yestotal.txt").toString('utf-8');
+                              var textByLine = text.split("\n")
+                              console.log(textByLine);
+                              textByLine.forEach(function(entry) {
+                               yestotal = entry;
+                                });
+                               
+                                var text = fs.readFileSync("nototal.txt").toString('utf-8');
+                                var textByLine = text.split("\n")
+                                console.log(textByLine);
+                                textByLine.forEach(function(entry) {
+                                 nototal = entry;
+                                  });
+                                  var text = fs.readFileSync("table.txt").toString('utf-8');
+                                   tab = text; 
+                                  console.log(tab);
+                                
           
         
     }
     function pubnub(){
         var pubnub = require('pubnub')({
-            publish_key: 'PUBNUB publish ker here',
-            subscribe_key: 'PUBNUB subscribe key here'
+            publish_key: 'pubnub publish key',
+            subscribe_key: 'pubnub subscribe key',
+            ssl: true
           });
           var channel = 'soil';
         var data = {
@@ -555,5 +783,113 @@ function soil(){
             message: data,
           });
     }
-   
+function update(){
+    if(desbool == 'false'){
+        r.getSubmission(dailyp).edit('Hello! the *Jeff Memorial Internet Garden* **WAS NOT** watered last cycle. \n The time is currently: **' + moment().format('LTS')+ '** in New York. \n \n The Soil Moisture for **GORDON** is currently: **' + soilm + '%** \n \n \n ***** \n please check the soil moisture for Gordon on the stickied post titled [Soil Moisture](https://www.reddit.com/r/takecareofourplants/comments/8csxtn/soil_moisture/) or on [my website](https://cdoern.com/) If you received a voting reminder and would like to be taken off of the PM list, go to the post titled, [List removal request post](https://www.reddit.com/r/takecareofourplants/comments/9i8trd/list_removal_request_post/) and comment **remove from list**. \n ***** \n You can currently say **yes, prost, sí, and aye** to water the plant and **no, nein, nyet, and not on your nelly** to not water the plant. These **ARE NOT** case sensetive! **ANY** of these words can be placed throughout a sentence and the bot will register the vote!'+ '\n ***** ' + '\n **Weekly Trend** \n \n \n' +  tabone + '\n' + tabtwo +'\n' +tabthree)
+            }
+    if(desbool== 'true'){
+        r.getSubmission(dailyp).edit('Hello! the *Jeff Memorial Internet Garden* **WAS** watered last cycle. \n The time is currently: **' + moment().format('LTS')+ '** in New York. \n \n The Soil Moisture for **GORDON** is currently: **' + soilm + '%** \n \n \n ***** \n please check the soil moisture for Gordon on the stickied post titled [Soil Moisture](https://www.reddit.com/r/takecareofourplants/comments/8csxtn/soil_moisture/) or on [my website](https://cdoern.com/) If you received a voting reminder and would like to be taken off of the PM list, go to the post titled, [List removal request post](https://www.reddit.com/r/takecareofourplants/comments/9i8trd/list_removal_request_post/) and comment **remove from list**. \n ***** \n You can currently say **yes, prost, sí, and aye** to water the plant and **no, nein, nyet, and not on your nelly** to not water the plant. These **ARE NOT** case sensetive! **ANY** of these words can be placed throughout a sentence and the bot will register the vote!'+ '\n ***** ' + '\n **Weekly Trend** \n \n \n' + tabone + '\n' + tabtwo +'\n' +tabthree)
+            }
+}
+
+//for webvoting do not use unless you want to use your own website or you can contact me to put it on my website
+/*function checkweb(){
+  
+      var sql = "SELECT count(*) as total FROM yesvotes";
+       
+      var query = con.query(sql, function(err, result) {
+       
+       console.log("Total yes votes: " + result[0].total);
+        yes = result[0].total;
+      });
+      var sql = "SELECT count(*) as total FROM novotes";
+       
+      var query = con.query(sql, function(err, result) {
+       
+       console.log("Total no  votes: " + result[0].total);
+        no =  result[0].total;
+        console.log('these is the row count ' +no);
+        console.log('this is the last recorded row count '+nototal);
+
+      });
+      if(nototal>no){
+        nototal = no;
+        fs.appendFile('nototal.txt','\n'+nototal, function (err) {
+            if (err) throw err;
+            console.log('Updated!');
+          });
+    }
+    if(yestotal>yes){
+        yestotal = yes;
+        fs.appendFile('yestotal.txt','\n'+yestotal, function (err) {
+            if (err) throw err;
+            console.log('Updated!');
+          });
+    }
+       if(no > nototal){
+       counter--;
+       counter3++;
+       fs.appendFile('count3.txt','\n'+counter3, function (err) {
+        if (err) throw err;
+        console.log('Updated!');
+      });
+         fs.appendFile('count.txt','\n'+counter, function (err) {
+            if (err) throw err;
+            console.log('Updated!');
+          });
+         nototal=no;
+         fs.appendFile('nototal.txt','\n'+nototal, function (err) {
+            if (err) throw err;
+            console.log('Updated!');
+          });
+         console.log(counter);
+       }
+       if(yes > yestotal){
+        counter++;
+        counter2++
+        fs.appendFile('count.txt','\n'+counter, function (err) {
+            if (err) throw err;
+            console.log('Updated!');
+          });
+        yestotal=yes;
+        fs.appendFile('yestotal.txt','\n'+yestotal, function (err) {
+            if (err) throw err;
+            console.log('Updated!');
+          });
+        console.log(counter);
+      }
+}
+//for webvoting do not use unless you want to use your own website or you can contact me to put it on my website
+function updateyes(){
+    var sql = "DELETE FROM yescounter WHERE message = 'message'";
+    con.query(sql, function (err, result) {
+      if (err) throw err;
+      console.log("Number of records deleted: " + result.affectedRows);
+    });
+    var values = [
+        [counter2, 'message']
+    ]
+    var sql = "INSERT INTO yescounter (count, message) VALUES ?";
+    con.query(sql, [values], function (err, result) {
+      if (err) throw err;
+      console.log("1 record inserted");
+    });
+
+var sql = "DELETE FROM nocounter WHERE message = 'message'";
+con.query(sql, function (err, result) {
+  if (err) throw err;
+  console.log("Number of records deleted: " + result.affectedRows);
 });
+var values = [
+    [counter3, 'message']
+]
+var sql = "INSERT INTO nocounter (count, message) VALUES ?";
+con.query(sql, [values], function (err, result) {
+  if (err) throw err;
+  console.log("1 record inserted");
+});
+}
+*/
+
+});
+
