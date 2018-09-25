@@ -6,10 +6,10 @@ user="bot user name"
 pass="bot pass";  
 
 
-require('dotenv').config();
-var five = require('johnny-five');
-var sleep = require('system-sleep');
-counter = 0;
+require('dotenv').config(); //library used in conjunction with snoowrap
+var five = require('johnny-five'); //how I connect to the arduinos through JS
+var sleep = require('system-sleep'); //a sleep function used as a cooldown
+counter = 0; //keeps tracks of the votes and is used to dtermine whether or not the plant is watered
 var fortable = [];
 var no = 0;
 var yes = 0;
