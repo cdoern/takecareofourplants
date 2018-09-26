@@ -11,8 +11,8 @@ var five = require('johnny-five'); //how I connect to the arduinos through JS
 var sleep = require('system-sleep'); //a sleep function used as a cooldown
 counter = 0; //keeps tracks of the votes and is used to dtermine whether or not the plant is watered
 var fortable = [];
-var no = 0;
-var yes = 0;
+var no = 0; //for webvoting purposes
+var yes = 0; //for webvoting purposes
 var mysql = require('mysql');
 
 //next 6 lines are for web voting if you want to implement 
@@ -22,11 +22,11 @@ var mysql = require('mysql');
   password: "db user pass!",
   database: "db name"
 }); */
-var fs = require('fs');
-var daily = '';
-var yestotal = 0;
-var tab = '';
-var nototal= 0;
+var fs = require('fs'); // this is declaring the file system. This is used to keep variable values in text files so if the system crashes ( which it does as it gets more complicated) you can just pick up where you left off
+var daily = ''; // this is the variable used to obtain the daily post ID
+var yestotal = 0; // used for webvoting pm me if you want an explanation on anything web voting related
+var tab = ''; //originally used for the table; it is now obsolete and never used, but could be implemented again
+var nototal= 0; // again, webvoting, pm u/cdoern01 on reddit with questions
 var postmessage = '';
 var soilm = 0;
 var alreadydone = 0;
