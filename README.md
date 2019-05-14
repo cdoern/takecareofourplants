@@ -16,7 +16,7 @@ The next aspect of this project and the currently maintained one, is the Take Ca
 
 This system is written in Java with a small JS component which manages the reading of the data from your garden. I have set this up so that, following the detailed guide below, anyone can monitor their garden from anywhere in the entire world. 
 
-[Click here to download it or get it above](TakeCareOfOurPlants.exe/download)
+[Click here to download it or get it above](TakeCareOfOurPlants.exe)
 
 ## Parts
 
