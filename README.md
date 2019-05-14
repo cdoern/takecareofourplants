@@ -31,13 +31,16 @@ This system is written in Java with a small JS component which manages the readi
 
   1) Download the following pieces of code -- TakeCareOfOurPlants.exe, write.jar, sensors.js, and send.js. 
   2) First we are going to set up the executable program as this is the easiest. Just move it onto your desktop and double click on it. That program will inform you if you need to install any other packages in order to run it (java)
-  3) the remaining 3 files are all to go on your raspberry pi. write.jar is a client to write your pubnub keys to a text file, sensors.js is the code which takes the arduibo sensor data and write it to text files, send.js sends this data to the pubnub servers which act as our in between service. 
+  3) the remaining 3 files are all to go on your raspberry pi. write.jar is a client to write your pubnub keys to a text file, sensors.js is the code which takes the arduino sensor data and writes it to text files, send.js sends this data to the pubnub servers which act as our in between service. 
   4) go to https://www.pubnub.com/ and make an account with them. Once you go through all of the steps and log in, it should bring you to a dashboard. Here you are going to click "create new keyset" create 3 new keysets, name them respectively "soil1", "soil2" "humid".
   5) clicking into these keysets will show you your subscribe and publish keys. these are very important. 
   6) Boot up your raspberry pi by inserting the micro SD card as well as plugging in the power cable. YOU WILL NEED A MOUSE AND KEYBOARD!!!!!
   7) configure the pi, set up your wifi network and then in raspberry pi configuration, turn on VNC. this will allow you to access the pi wirelessly from another computer
   8) once you have created a vnc account and signed into that on both the pi and the VNC connect app on your computer, connect to the pi from your laptop, it is much easier.
-  9) ok now here comes the most technical part of all of this. open the terminal on the raspberry pi and type, "node --v" if that number is around 4,5 or 6, (or even higher!) we are ok. Then type "npm --v" if that number is around the same ranger we are also ok. if neither or either of these did not work as described we are going to go ahead and reinstall one, or both. 
-  
+  9) ok now here comes the most technical part of all of this. open the terminal on the raspberry pi and type, "node -v" if that number is around 4,5 or 6, (or even higher!) we are ok. Then type "npm -v" if that number is around the same ranger we are also ok. if neither or either of these did not work as described we are going to go ahead and reinstall one, or both. 
+  10) to do this, we are going to type in the terminal "sudo apt-get purge -y nodejs npm" this removes all nodejs and npm files if there are any and allows us to do a fresh install
+  11) after types YES or Y through all of the commands, we should have rid ourselves of old Node JS! Now to do a quick reinstall of the new stuff we type "curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -" then type "sudo apt install -y nodejs" 
+  12) after doing this, type the same commands "node -v" and "npm -v" and they should be working perfectly! if NPM by any chance does not show up, type "sudo apt-get install npm"
+  13) Now, open the file system on your pi and create a new folder somewhere randomly within \home\pi. Call this folder whatever you like, within it you can create 3 new files, naming them respectively what the 3 remaining files you downloaded were. you can download "Filezilla" to transfer the files but honestly just copy and paste their contents into the files you just created in the folder. 
 
 
