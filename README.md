@@ -16,6 +16,8 @@ The next aspect of this project and the currently maintained one, is the Take Ca
 
 This system is written in Java with a small JS component which manages the reading of the data from your garden. I have set this up so that, following the detailed guide below, anyone can monitor their garden from anywhere in the entire world. 
 
+[CLick here to download it or get it above](TakeCareOfOurPlants.exe)
+
 ## Parts
 
 1) [Raspberry Pi 3b](https://www.amazon.com/Raspberry-Pi-RASPBERRYPI3-MODB-1GB-Model-Motherboard/dp/B01N13X8V1/ref=sr_1_1_sspa?keywords=raspberry%2Bpi%2B3b&qid=1557795341&s=gateway&sr=8-1-spons&th=1)
