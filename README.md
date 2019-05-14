@@ -4,7 +4,7 @@ This is the take care of our plants project, an online an offline initiative to 
 
 # Reddit Component 
 
-Index.js is the file for the first iteration of the project which lasted from February 2018 - May 2019. This file is a verbatim copy and paste. Copy this code into a local JS file, install the proper libraries, and input the proper keys for the reddit API and pubnub. What this does is it takes input from an arduino and raspberry pi, and takes users votes, based on this data, whether or not the plant(s) should be watered. This is the stepping stone for the more generally applicable, downloadable client based off of this project. 
+Index.js is the file for the first iteration of the project which lasted from November 2017 - May 2019. This file is a verbatim copy and paste. Copy this code into a local JS file, install the proper libraries, and input the proper keys for the reddit API and pubnub. What this does is it takes input from an arduino and raspberry pi, and takes users votes, based on this data, whether or not the plant(s) should be watered. This is the stepping stone for the more generally applicable, downloadable client based off of this project. 
 
 the following files are allocated to the Reddit aspect of this project:
 1) Index.js 
