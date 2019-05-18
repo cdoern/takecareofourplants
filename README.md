@@ -31,7 +31,7 @@ This system is written in Java with a small JS component which manages the readi
 
 ## Steps 
 
-  1. Download the following pieces of code -- TakeCareOfOurPlants.exe, write.jar, sensors.js, and send.js. 
+  1. Download the following pieces of code -- [TakeCareOfOurPlants.exe](https://github.com/cdoern/takecareofourplants/raw/master/TakeCareOfOurPlants.exe), [write.jar](https://github.com/cdoern/takecareofourplants/raw/master/write.jar), [sensors.js](https://github.com/cdoern/takecareofourplants/raw/master/sensors.js), and [send.js](https://github.com/cdoern/takecareofourplants/raw/master/send.js). 
   2. First we are going to set up the executable program as this is the easiest. Just move it onto your desktop and double click on it. That program will inform you if you need to install any other packages in order to run it (java)
   3. the remaining 3 files are all to go on your raspberry pi. write.jar is a client to write your pubnub keys to a text file, sensors.js is the code which takes the arduino sensor data and writes it to text files, send.js sends this data to the pubnub servers which act as our in between service. 
   4. go to https://www.pubnub.com/ and make an account with them. Once you go through all of the steps and log in, it should bring you to a dashboard. Here you are going to click "create new keyset" create 3 new keysets, name them respectively "soil1", "soil2" "humid".
