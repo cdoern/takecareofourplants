@@ -11,6 +11,7 @@ the following files are allocated to the Reddit aspect of this project:
 2) humid.js
 
 # Downloadable Content/Garden Monitor
+**Currently only for Windows**
 
 The next aspect of this project and the currently maintained one, is the Take Care of Our Plants Garden Monitoring System. This is currently in early beta stages, but a usable client (TakeCareOfOurPlants.exe) is posted above for download!!! 
 
