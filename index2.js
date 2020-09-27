@@ -141,7 +141,7 @@ ctx.fillRect(280, 40, 110, 80);
 ctx.fillStyle = '#000000';
 ctx.font = '10px serif';
 ctx.fillText('Notes from Herbert:', 281, 60)
-ctx.fillText('Happy 4th!', 281, 80)
+ctx.fillText('Happy Fall!', 281, 80)
 
 // NEW NEW NEW NEW 
 
