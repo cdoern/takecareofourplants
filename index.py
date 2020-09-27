@@ -37,7 +37,7 @@ else:
 
 
 
-CLIENT_ID = "246ab90899c251a"
+CLIENT_ID = ""
 PATH = "/home/pi/takecareofourplants/plant.png"
 
 conditions = ['Wet', 'Moist', 'Normal', 'Normal', 'Dry', 'Too Dry']
