@@ -6,12 +6,16 @@ import pyimgur
 from subprocess import call
 import datetime
 import numpy as np
+import random
 
+#weather declaration and random generation
 weatheropts = ['Clear', 'Dry', 'Mild', 'Cloudy', 'Foggy', 'Drizzling', 'Raining', 'Pouring']
 
 rand = np.random.choice(weatheropts, 7, p=[.2, .2, .2, .2, .05, .05, .05, .05])
-#print(rand)
 
+#end weather declaration and random generation
+
+#day number retrieval
 f = open("/home/pi/takecareofourplants/daynum.txt", "r")
 nums = ''
 for x in f:
@@ -19,9 +23,12 @@ for x in f:
 f.close()
 num = int(nums)
 
+#end day number retrieval
+
+#day of week handling
 if num == 7:
-    num = 1;
-    open("/home/pi/takecareofourplants/daynum.txt", "w").close();
+    num = 1
+    open("/home/pi/takecareofourplants/daynum.txt", "w").close()
     f = open("/home/pi/takecareofourplants/daynum.txt", "a")
     f.write('\n' + str(num))
     open("/home/pi/takecareofourplants/weather.txt", "w").close()
@@ -34,9 +41,10 @@ else:
     f = open("/home/pi/takecareofourplants/daynum.txt", "a")
     f.write('\n' + str(num))
     f.close()
+#end day of week handling
 
 
-
+#praw setup
 CLIENT_ID = ""
 PATH = "/home/pi/takecareofourplants/plant.png"
 
@@ -50,6 +58,9 @@ reddit = praw.Reddit(client_id="",
 
 subreddit = reddit.subreddit('takecareofourplants')
 
+#end praw setup
+
+#comment scraping to get votes
 counter = 0
 voterlist = []
 no = [' no ', ' not on your nelly ', ' nein ', ' nyet ', ' nope ']
@@ -77,47 +88,89 @@ for submission in reddit.subreddit('takecareofourplants').hot(limit=1):
                     voterlist.append(comment.author.name)
     print(voterlist)
 
-f = open("/home/pi/takecareofourplants/count.txt", "a")
-num = str(counter)
-f.write("\n" + num)
-f.close()
+#end comment scraping to get votes
 
-call(["node", "/home/pi/takecareofourplants/index2.js"])
+
+#getting ready to format post random stuff....
 time.sleep(15)
-
-f = open("/home/pi/takecareofourplants/currentcondition.txt", "r")
-cond = ''
-for x in f:
-    cond = x
-f.close()
-
-im = pyimgur.Imgur(CLIENT_ID)
-uploaded_image = im.upload_image(PATH, title="Daily Plant Watering")
-print(uploaded_image.link)
 
 d = datetime.datetime.today()
 
 day = d.strftime("%B %d %Y")
 
-reddit.subreddit('takecareofourplants').submit('Daily Plant Watering for ' + day, url=uploaded_image.link).mod.sticky(
-    state=True, bottom=False)
+# default case handling not watered and weather handling
+
+yesno = 'not'
+
+add = random.randint(1, 7)
+add = add * -1
+
+#begin weather addition handling
+change = 0
+
+weathercond = random.randint(0,7)
+if weatheropts.index(rand[weatheropts]) < weatheropts.length / 2:
+    change = -1 * random(3, 10)
+elif weatheropts.index(rand[weatheropts]) > (weatheropts.length / 2 + 1):
+    change = random(3,10)
+
+#end weather addition handling
+
+
+# end default case handling
+
+if counter > 0:
+    yesno = ''
+    add = random.randint(5, 20)
+
+#end random stuff and var declaration
+
+#soil moisture handling
+lines = ''
+f = open("/home/pi/takecareofourplants/soilm.txt", "r")
+soilm = ''
+for x in f:
+    soilm = x
+f.close()
+soilm = int(soilm)
+soilm = soilm + add
+soilm = soilm + change
+
+f = open("/home/pi/takecareofourplants/soilm.txt", "w")
+f.write(soilm)
+f.close()
+
+#end soil moisture handling
+
+#text post formatting
+for i in soilm:
+    lines += '|'
+
+
+posttext = ('Welcome back... Herbert was' + yesno + ' watered last cycle \n \n' +
+            'The Current soil moisture is: \n \n'+ 
+            lines + ' ' + soilm+'% \n \n'+
+            'The current weather condition is: \n \n'+ 
+            ''+rand[weathercond]+ '. This has caused the soil moisture to change by' + change + '% \n \n \n'+
+            'Herbert\'s life depends on you!' +
+               'His overall current condition is: ' + conditions[round((100/soilm) - 1)] + '\n \n' +
+               'There are 5 conditons... \n \n' +
+               '1) Wet **67% - 100%** \n \n' +
+               '2) Moist **41% - 66%** \n \n' +
+               '3) Normal **23% - 40%** \n \n' +
+               '4) Dry **16% - 22%** \n \n' +
+               '5) Too Dry **0% - 16%** \n \n' +
+               'Each of these conditions counts for a specific and different percentage value. Your goal is to aim for the normal category as much as possible. \n' +
+               'You must be careful with watering... each time watered Herbert\'s soil moisture will increase by 5-20 percent. Each time not watered his soil moisture \n'+
+               'will dcrease by 1-7 percent. \n \n \n'+
+               'The current weather condition also either subtracts, adds to, or maintains the soil moisture.')
+# end text post formatting 
+
+#post submission
+reddit.subreddit('takecareofourplants').submit('Daily Plant Watering for ' + day, selftext=''+posttext).mod.sticky(state=True, bottom=False) #url=uploaded_image.link).mod.sticky(
+    #state=True, bottom=False)
 
 time.sleep(4)
 
-for post in reddit.subreddit('takecareofourplants').hot(limit=1):
-    post.reply("This is the daily watering post. This plant's life depends on you! \n \n " +
-               "The plants current name is: Herbert \n \n" +
-               "The current condition is: " + conditions[int(cond)] + "\n \n" +
-               "There are 5 conditons... \n \n" +
-               "1) Wet **67% - 100%** \n \n" +
-               "2) Moist **41% - 66%** \n \n" +
-               "3) Normal **23% - 40%** \n \n" +
-               "4) Dry **16% - 22%** \n \n" +
-               "5) Too Dry **0% - 16%** \n \n" +
-               "Each of these conditions counts for a specific and different percentage value. Your goal is to aim for the normal category as much as possible. \n" +
-               "You must be careful with watering... each time watered the pump will increase the Soil moisture a random number between 0 and 20. Not watering will cause a daily decrease between 0 and 7 percent. This will not be a simple cycle of watering and not watering. \n" +
-               "If the plant remains in the \"Too Dry\" or \"Wet\" sections for 15 days or more... it dies.").mod.distinguish(
-        how='yes', sticky=True)
-
-
+#end post submission
 
