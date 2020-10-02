@@ -1,3 +1,4 @@
+# coding=utf-8
 import praw
 import re
 import string
@@ -75,10 +76,10 @@ add = add * -1
 change = 0
 
 weathercond = random.randint(0,7)
-if weatheropts.index(rand[weatheropts]) < weatheropts.length / 2:
-    change = -1 * random(3, 10)
-elif weatheropts.index(rand[weatheropts]) > (weatheropts.length / 2 + 1):
-    change = random(3,10)
+if weatheropts.index(rand[weathercond]) < len(weatheropts) / 2:
+    change = -1 * random.randint(3, 7)
+elif weatheropts.index(rand[weathercond]) > len(weatheropts) / 2 + 1:
+    change = random.randint(3,7)
 
 #end weather addition handling
 
@@ -94,16 +95,16 @@ if counter > 0:
 #soil moisture handling
 lines = ''
 f = open("/home/pi/takecareofourplants/soilm.txt", "r")
-soilm = ''
+soilmget = ''
 for x in f:
-    soilm = x
+    soilmget = x
 f.close()
-soilm = int(soilm)
+soilm = int(soilmget)
 soilm = soilm + add
 soilm = soilm + change
 
 f = open("/home/pi/takecareofourplants/soilm.txt", "w")
-f.write(soilm)
+f.write(str(soilm))
 f.close()
 
 #end soil moisture handling
@@ -115,13 +116,13 @@ for i in range(soilm):
 
 posttext = ('Welcome back... Herbert was' + yesno + ' watered last cycle \n \n' +
             'The current soil moisture is: \n \n'+ 
-            lines + ' ' + soilm+'% \n \n'+
+            lines + ' ' + str(soilm) +'% \n \n'+
             'The current weather condition is: \n \n'+ 
-            ''+rand[weathercond]+ '. This has caused the soil moisture to change by' + change + '% \n \n \n'+
+            ''+ rand[weathercond] + '. This has caused the soil moisture to change by' + str(change) + '% \n \n \n'+
             '***** \n \n \n'+
             'Herbert\'s life depends on you!' +
-               'His overall current condition is: ' + conditions[round((100/soilm) - 1)] + '\n \n' +
-               'There are 5 overall conditons... \n \n' +
+               'His overall current condition is: ' + conditions[round((100/soilm)-1)] + '\n \n' +
+               'There are 5 overall conditions... \n \n' +
                '1) Wet **67% - 100%** \n \n' +
                '2) Moist **41% - 66%** \n \n' +
                '3) Normal **23% - 40%** \n \n' +
@@ -130,8 +131,8 @@ posttext = ('Welcome back... Herbert was' + yesno + ' watered last cycle \n \n' 
                '***** \n \n \n'+
                'Each of these conditions counts for a specific percentage value range. Your goal is to aim for the normal range as much as possible. \n' +
                'You must be careful with watering... each time watered, Herbert\'s soil moisture will increase by 5-20 percent. Each time not watered his soil moisture '+
-               'will dcrease by 1-7 percent. \n \n'+
-               'The current weather condition also either subtracts from, adds to, or maintains the soil moisture. \n \n \n'+
+               'will decrease by 1-7 percent. \n \n'+
+               'The current weather condition also either subtracts from, adds to, or maintains the soil moisture. \n \n \n' +
                '[join our discord server!](https://discord.gg/C7F82gU)')
 # end text post formatting 
 
