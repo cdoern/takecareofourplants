@@ -67,7 +67,7 @@ day = d.strftime("%B %d %Y")
 
 # default case handling not watered and weather handling
 
-yesno = 'not'
+yesno = 'not '
 
 add = random.randint(1, 7)
 add = add * -1
@@ -113,15 +113,18 @@ f.close()
 for i in range(soilm):
     lines += '|'
 
+#for j in range(100-soilm):
+#   lines += 'x'
 
-posttext = ('Welcome back... Herbert was' + yesno + ' watered last cycle \n \n' +
+
+posttext = ('Welcome back... Herbert was ' + yesno + 'watered last cycle \n \n' +
             'The current soil moisture is: \n \n'+ 
-            lines + ' ' + str(soilm) +'% \n \n'+
+            lines + '  **' + str(soilm) +'%** \n \n'+
             'The current weather condition is: \n \n'+ 
-            ''+ rand[weathercond] + '. This has caused the soil moisture to change by' + str(change) + '% \n \n \n'+
+            '**'+ rand[weathercond] + '**. This has caused the soil moisture to change by ' + str(change) + '% \n \n \n'+
             '***** \n \n \n'+
-            'Herbert\'s life depends on you!' +
-               'His overall current condition is: ' + conditions[round((100/soilm)-1)] + '\n \n' +
+            'Herbert\'s life depends on you! \n \n' +
+               'His overall current condition is: **' + conditions[round((100/soilm)-1)] + '** \n \n' +
                'There are 5 overall conditions... \n \n' +
                '1) Wet **67% - 100%** \n \n' +
                '2) Moist **41% - 66%** \n \n' +
@@ -139,7 +142,10 @@ posttext = ('Welcome back... Herbert was' + yesno + ' watered last cycle \n \n' 
 #post submission
 reddit.subreddit('takecareofourplants').submit('Daily Plant Watering for ' + day, selftext=''+posttext).mod.sticky(state=True, bottom=False)
 
-time.sleep(4)
+for sub in reddit.subreddit('takecareofourplants').new(limit=1):
+    sub.mod.flair(text = 'Daily Watering Post')
+
+
 
 #end post submission
 
