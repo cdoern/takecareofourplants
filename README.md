@@ -2,6 +2,24 @@
 
 This is the take care of our plants project, an online an offline initiative to make automated/smart gardening much more accessible. 
 
+# Current Iteration
+
+takecareofourplants.py, calc.py, and submit.py are the three Python files of the most recent **r/takecareofourplants** iteration. The reddit bot u/takecareofourplants will read in users comments from the previous day, and determine (based off of whether they said yes or no) whether or not to turn on the water pump and water the plant. The plant's survival is completely based off of user input. The users vote daily based off of past trends and the soil moisture levels.
+
+## takecareofourplants.py
+
+This takes care of reading the soil moisture and turning on the pump for the plant. The pump and soil moisture sensor are attached to a Raspberry Pi Zero. The pump is attached indirectly through a relay and the sensor is attached directly to the GPIO pins (getting an ADC soon to have more accurate readings.
+
+## calc.py
+
+This is the code which looks at the post from the previous day, combs through user comments, and determines an overall counter value based on the yes/no votes. The counter must be greater than zero for the pump to be turned on. This result gets written to a file for the RPI to use.
+
+## submit.py
+
+This is the script which, both after reading in the comments and watering/not watering the plant, reads in the new soil moisture and makes the daily post with updated data for the users to deliberate over for the next 24 hours.
+
+**everything below this line is no longer maintaied and might not work! the garden monitor is a simple JAR file so it will but the old reddit component relies on alot of Node.JS libraries which, at the time, were not well maintained...**
+
 # Reddit Component 
 
 Index.js is the file for the first iteration of the project which lasted from November 2017 - May 2019. This file is a verbatim copy and paste. Copy this code into a local JS file, install the proper libraries, and input the proper keys for the reddit API and pubnub. What this does is it takes input from an arduino and raspberry pi, and takes users votes, based on this data, whether or not the plant(s) should be watered. This is the stepping stone for the more generally applicable, downloadable client based off of this project. 
