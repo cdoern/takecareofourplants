@@ -15,11 +15,11 @@ conditions = ['Wet', 'Moist', 'Normal', 'Normal', 'Dry', 'Too Dry']
 #end weather declaration and random generation
 
 #praw setup
-reddit = praw.Reddit(client_id="GROOQTDDB22yjw",
-                     client_secret="I7r3qT0jLZN90KDu6ltGGDimFEg",
-                     user_agent="plantbot",
-                     username="takecareofourplants",
-                     password="seadawg01")
+reddit = praw.Reddit(client_id="",
+                     client_secret="",
+                     user_agent="",
+                     username="",
+                     password="")
 
 subreddit = reddit.subreddit('takecareofourplants')
 
