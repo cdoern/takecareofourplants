@@ -1,14 +1,17 @@
 import RPi.GPIO as GPIO
 import datetime
 import time
+from MCP3008 import MCP3008
 
 
 GPIO.setmode(GPIO.BOARD)
 
+adc = MCP3008()
 
-def get_status(pin = 8): # soil moisture data
-    GPIO.setup(pin, GPIO.IN) 
-    return GPIO.input(pin)
+def get_status(): # soil moisture data
+    value = adc.read( channel = 0 ) # You can of course adapt the channel to be read out
+    value = round((value / 880.0) * 100)
+    return value
 
 
 def init_output(): # relay init
@@ -25,7 +28,7 @@ def water(): # plant watering
 def main():
     init_output()
     f = open("/home/pi/Documents/des.txt", "r")
-    des = f.readLine()
+    des = f.readline()
     desInt = int(des)
     f.close()
     if desInt == 1:
@@ -36,4 +39,3 @@ def main():
     f.close()
 
 main()
-
