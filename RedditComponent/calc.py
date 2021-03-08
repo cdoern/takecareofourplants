@@ -7,6 +7,7 @@ from subprocess import call
 import datetime
 import numpy as np
 import random
+import csv
 
 #weather declaration and random generation
 
@@ -26,6 +27,11 @@ subreddit = reddit.subreddit('takecareofourplants')
 #end praw setup
 
 #comment scraping to get votes
+today = datetime.date.today()
+f = open('voterData.csv', mode = 'a')
+names = ['user','date','vote']
+writer = csv.DictWriter(f, fieldnames = names, delimiter = ',', quotechar = '"', quoting = csv.QUOTE_MINIMAL)
+
 counter = 0
 voterlist = []
 no = [' no ', ' not on your nelly ', ' nein ', ' nyet ', ' nope ']
@@ -46,11 +52,13 @@ for submission in reddit.subreddit('takecareofourplants').hot(limit=1):
                     print(comment.body)
                     comment.reply('Thanks for your vote for watering the plant! votes = ' + str(counter))
                     voterlist.append(comment.author.name)
+                    writer.writerow({'user':''+str(comment.author.name), 'date': ''+str(today), 'vote':'yes'})
                 if re.findall(n, str1):
                     counter = counter - 1
                     print(comment.body)
                     comment.reply('Thanks for your vote against watering the plant! votes = ' + str(counter))
                     voterlist.append(comment.author.name)
+                    writer.writerow({'user':''+str(comment.author.name), 'date': ''+str(today), 'vote':'no'})
     print(voterlist)
 
 #end comment scraping to get votes
