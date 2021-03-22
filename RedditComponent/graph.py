@@ -55,14 +55,14 @@ def drawGraph(x, y1, y2):
     	axs[0].set_ylabel('Yes Votes') # Clean Y Labels
     	axs[1].set_ylabel('No Votes')
     	
-    	max_y = max(max(y1),max(y2)) # Synchronize Axes
+    	max_y = max(max(y1),max(y2))+1 # Synchronize Axes
     	axs[0].set_ylim(0,max_y)
     	axs[1].set_ylim(0,max_y)
     	
     	plt.tight_layout() # Clean Suptitle
     	fig.suptitle('Weekly Voting Data', y=1.03)
 	
-    	plt.savefig('/home/pi/Documents/weeklyData.png') # save file
+    	plt.savefig('/home/pi/Documents/weeklyData.png', bbox_inches='tight') # save file
 	
     	uploadImage()
 
