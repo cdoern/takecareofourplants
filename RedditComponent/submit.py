@@ -4,7 +4,7 @@ import re
 import string
 import time
 from subprocess import call
-import datetime
+from datetime import datetime, timedelta
 import numpy as np
 import random
 
@@ -29,7 +29,9 @@ yesno = 'not '
 des = ''
 desInt = 0
 
-d = datetime.datetime.today()
+#d = datetime.datetime.today()
+
+d = datetime.today()
 
 day = d.strftime("%B %d %Y")
 
@@ -50,20 +52,44 @@ f = open("/home/pi/Documents/soilm.txt", "r")
 soilm = f.readline()
 soilmInt = int(soilm)
 
-if soilmInt < 60:
+f = open("/home/pi/Documents/temp.txt", "r")
+temp = f.readline()
+tempInt = int(temp)
+
+f = open("/home/pi/Documents/humid.txt", "r")
+humid = f.readline()
+humidInt = int(humid)
+
+
+if soilmInt < 35:
     soilm = 'DRY'
-if soilmInt >= 60:
+if soilmInt >= 35:
     soilm = 'WET'
 
 #end soil moisture handling
 
 #text post formatting
+lines = ''
 for i in range(soilmInt):
     lines += '|'
+    
+linesT = ''
+for i in range(tempInt):
+    linesT += '|'
+    
+linesH = ''
+for i in range(humidInt):
+    linesH += '|'
+
+
 
 posttext = ('Welcome back... Phil was ' + yesno + 'watered last cycle. Would you like to water Phil today? \n \n' +
             'The current soil moisture is: \n \n'+ 
             lines + ' **'+ str(soilmInt) +'%** ('+ str(soilm) +') \n \n'+
+            'The current temperature is: \n \n'+
+            linesT + ' **' + str(tempInt) + '°F** \n \n'+
+            'The current humidity is: \n \n'+
+            linesH + ' **' + str(humidInt) + '%** \n \n'+
             'You can use the following words and phrases to vote: \n \n'+
             '**Yes vote**: yes, aye, sí, prost \n \n'+
             '**No vote**: no, not on your nelly, nein, nyet, nope \n \n'+
@@ -74,16 +100,8 @@ posttext = ('Welcome back... Phil was ' + yesno + 'watered last cycle. Would you
             '2) The **top 2 inches of their soil to be wet**. we will have to figure out what type of watering cycle allows this... \n \n'+
             '3) A temperature of 55 degrees Fahrenheit \n \n'+
             '4) They respond poorly to both over and underwatering. The leaves droop in similar ways in each of these circumstances so focus on the soil moisture and the cycle! \n'+
-             #  'His overall current condition is: **' + conditions[round((100/soilm)-1)] + '** \n \n' +
-             #  'There are 5 overall conditions... \n \n' +
-             #  '1) Wet **67% - 100%** \n \n' +
-             #  '2) Moist **41% - 66%** \n \n' +
-             #  '3) Normal **23% - 40%** \n \n' +
-             #  '4) Dry **16% - 22%** \n \n' +
-             #  '5) Too Dry **0% - 16%** \n \n \n' + 
             '***** \n \n \n'+
             'If you choose to water Phil, the pump turns on for about 7 seconds dispensing approximately **8 fl oz or 1 cup of water** \n \n'+ 
-             # 'Each of these conditions counts for a specific percentage value range. Your goal is to aim for the normal range as much as possible. \n \n' +
                '[join our discord server!](https://discord.gg/C7F82gU)')
 # end text post formatting 
 
