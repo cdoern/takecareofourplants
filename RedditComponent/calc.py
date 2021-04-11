@@ -35,7 +35,7 @@ writer = csv.DictWriter(f, fieldnames = names, delimiter = ',', quotechar = '"',
 counter = 0
 voterlist = []
 no = [' no ', ' not on your nelly ', ' nein ', ' nyet ', ' nope ']
-yes = [' yes ', ' aye ', ' sí ', ' prost ']
+yes = [' yes ', ' aye ', ' sí ', ' prost ', ' yeah ']
 
 for submission in reddit.subreddit('takecareofourplants').hot(limit=1):
     print(submission.title)
