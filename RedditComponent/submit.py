@@ -54,11 +54,13 @@ soilmInt = int(soilm)
 
 f = open("/home/pi/Documents/temp.txt", "r")
 temp = f.readline()
-tempInt = int(temp)
+tempFloat = float(temp)
+tempInt = int(tempFloat)
 
 f = open("/home/pi/Documents/humid.txt", "r")
 humid = f.readline()
-humidInt = int(humid)
+humidFloat = float(humid)
+humidInt = int(humidFloat)
 
 
 if soilmInt < 35:
@@ -100,8 +102,16 @@ posttext = ('Welcome back... Phil was ' + yesno + 'watered last cycle. Would you
             '2) The **top 2 inches of their soil to be wet**. we will have to figure out what type of watering cycle allows this... \n \n'+
             '3) A temperature of 55 degrees Fahrenheit \n \n'+
             '4) They respond poorly to both over and underwatering. The leaves droop in similar ways in each of these circumstances so focus on the soil moisture and the cycle! \n'+
+             #  'His overall current condition is: **' + conditions[round((100/soilm)-1)] + '** \n \n' +
+             #  'There are 5 overall conditions... \n \n' +
+             #  '1) Wet **67% - 100%** \n \n' +
+             #  '2) Moist **41% - 66%** \n \n' +
+             #  '3) Normal **23% - 40%** \n \n' +
+             #  '4) Dry **16% - 22%** \n \n' +
+             #  '5) Too Dry **0% - 16%** \n \n \n' + 
             '***** \n \n \n'+
             'If you choose to water Phil, the pump turns on for about 7 seconds dispensing approximately **8 fl oz or 1 cup of water** \n \n'+ 
+             # 'Each of these conditions counts for a specific percentage value range. Your goal is to aim for the normal range as much as possible. \n \n' +
                '[join our discord server!](https://discord.gg/C7F82gU)')
 # end text post formatting 
 
