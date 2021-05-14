@@ -8,9 +8,11 @@ from imgurAuth import authenticate
 from redditAuth import auth
 from datetime import datetime
 import os
+from math import gcd
 
 import glob
 
+sns.set()
 
 def mostAccurate(userAccuracy):
 
@@ -27,11 +29,18 @@ def mostVotes(userVotes):
     index = 0
     maxm = 0
 
+    topTen = []
+
+    counter = 0
+
     for ind, amount in enumerate(userVotes):
         if amount > maxm:
+            if counter < 10:
+                topTen.append(ind)
+                counter+=1
             maxm = amount
             index = ind
-    return index
+    return index, topTen
 
 def submitReddit(theUrl):
     
@@ -74,33 +83,89 @@ def graph(totalNoVotes, totalYesVotes, timesWatered, timesNotWatered, users, use
     x2 = ['times watered', 'times not watered']
     y2 = [timesWatered, timesNotWatered]
 
-    fig, axs = plt.subplots(facecolor='w', nrows=2) # Set Up Figure and Subplots
 
-    plt.margins(x=0, y =100)
+   
+    userVotes, topTen = mostVotes(usersVotes)
+
+    userVotes = users[userVotes]
+
+    topTenPeople = []
+
+    topTenVotes = []
+
+
+    for indexes in topTen:
+        topTenPeople.append(users[indexes])
+        topTenVotes.append(usersVotes[indexes])
+    print(topTenPeople)
+    print(topTenVotes)
+
+    fig, axs = plt.subplots(facecolor='w', nrows=3) # Set Up Figure and Subplots
+
+    #plt.subplots_adjust(top = .8)
+
+    #fig.margins(x=0, y =100)
     
     sns.barplot(x=x1, y=y1, color=sns.color_palette()[0], ax=axs[0]) # Plot Barplots
     sns.barplot(x=x2, y=y2, color=sns.color_palette()[0], ax=axs[1])
+    axs[2] = plt.barh(topTenPeople, topTenVotes) # horiz user grap
+
+    
 
     axs[0].set_ylabel('vote number') # Clean Y Labels
     axs[1].set_ylabel('total times')
+    plt.text(16, -3.1, "times voted accurately" ) # barh doesnt add a y label feature or x label so manually inputting text
+    #axs[2].set_ylabel('best users')
 
     max_y = max(y1)+1 # Synchronize Axes
     max_y2 = max(y2)+1
+    #max_y3 = max(topTenPeople) + 1
+
+    stepy1 = []
+
+    stepy2 = []
+
+    maxy1 = max(y1)
+
+    maxy2 = max(y2)
+
+    maxtotal = 0
+
+    if maxy1 > maxy2:
+        maxtotal = maxy1
+    else:
+        maxtotal = maxy2
+
+    i = 1
+    div = gcd(maxy1, maxy2)
+    for i in range(1,maxtotal):
+        y1frac = ((i  * div)/maxy1).is_integer()
+        y2frac = ((i * div)/maxy2).is_integer()
+
+        if y1frac and i <= maxy1:
+            stepy1.append(i)
+        if y2frac and i <= maxy2:
+            stepy2.append(i)
+
+    axs[0].set_yticks(stepy1)
+    axs[1].set_yticks(stepy2)
+
     axs[0].set_ylim(0,max_y)
     axs[1].set_ylim(0,max_y2)
+   # axs[2].ylim(0, max_y3)
 
     plt.tight_layout() # Clean Suptitle
     fig.suptitle('Cumulative Voting Data', y=1.01)
 
     userAcc = users[mostAccurate(usersAccuracy)]
 
-    userVotes = users[mostVotes(usersVotes)]
+ 
 
-    
 
-    axs[0].text(-.1, max(y1)+45, "The user with the most accurate votes was: u/"+userAcc, fontsize = 10)
 
-    axs[0].text(-.1, max(y1)+25, "The user with the most votes was: u/"+userVotes, fontsize = 10)
+    axs[0].text(-.22, max(y1)+65, "The user with the most accurate votes was: u/"+userAcc, fontsize = 10)
+
+    axs[0].text(-.22, max(y1)+45, "The user with the most votes was: u/"+userVotes, fontsize = 10)
 
     print('about to save pic')
     
@@ -206,3 +271,6 @@ def main():
     graph(totalNoVotes, totalYesVotes, timesWatered, timesNotWatered, userList, usersAccuracy, usersVotes)
 
 main()
+
+
+
