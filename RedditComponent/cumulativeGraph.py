@@ -33,13 +33,22 @@ def mostVotes(userVotes):
 
     counter = 0
 
+    tempMax = 0
+
+
+    # use selection/insetion sort and sort a new array each time you find the max. keep track of the original index in userVotes by adding for loop counter to where you are in sorted array
+
+
     for ind, amount in enumerate(userVotes):
+        tempMax = 0
         if amount > maxm:
-            if counter < 10:
-                topTen.append(ind)
-                counter+=1
             maxm = amount
             index = ind
+        for i in range(ind, len(userVotes)-1):
+            if userVotes[i] > tempMax and counter < 5:
+                tempMax = userVotes[i]
+                topTen.append(i)
+                counter+=1
     return index, topTen
 
 def submitReddit(theUrl):
@@ -120,6 +129,7 @@ def graph(totalNoVotes, totalYesVotes, timesWatered, timesNotWatered, users, use
     max_y = max(y1)+1 # Synchronize Axes
     max_y2 = max(y2)+1
     #max_y3 = max(topTenPeople) + 1
+    """ NOT READY YET
 
     stepy1 = [] # array for y step values
 
@@ -130,14 +140,24 @@ def graph(totalNoVotes, totalYesVotes, timesWatered, timesNotWatered, users, use
     maxy2 = max(y2)
 
     maxtotal = 0 # max total is so that we ony need one loop
+    maxmin = 0
 
     if maxy1 > maxy2:
         maxtotal = maxy1 
+        maxmin = maxy2 -10
     else:
         maxtotal = maxy2
+        maxmin = maxy1 - 10
 
     i = 1
-    div = gcd(maxy1, maxy2) # this is so the .is_integer lines work at least kinda
+    #div = gcd(maxy1, maxy2) # this is so the .is_integer lines work at least kinda
+    #div = ((maxy1 * maxy2)/div)
+
+    while(True):
+        if((maxy1 % maxmin == 0) and (maxy2 % maxmin == 0)):
+            div = maxmin
+            break
+        maxmin-=1
     for i in range(1,maxtotal):
         y1frac = ((i  * div)/maxy1).is_integer() # if its a divisor
         y2frac = ((i * div)/maxy2).is_integer() #if it is a divisor 
@@ -149,6 +169,8 @@ def graph(totalNoVotes, totalYesVotes, timesWatered, timesNotWatered, users, use
 
     axs[0].set_yticks(stepy1) # sets y step for g1
     axs[1].set_yticks(stepy2) # sets y step for g2
+
+    NOT READY YET""" 
 
     axs[0].set_ylim(0,max_y)
     axs[1].set_ylim(0,max_y2)
@@ -269,6 +291,3 @@ def main():
     graph(totalNoVotes, totalYesVotes, timesWatered, timesNotWatered, userList, usersAccuracy, usersVotes)
 
 main()
-
-
-
