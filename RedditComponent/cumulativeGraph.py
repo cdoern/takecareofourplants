@@ -85,9 +85,9 @@ def graph(totalNoVotes, totalYesVotes, timesWatered, timesNotWatered, users, use
 
 
    
-    userVotes, topTen = mostVotes(usersVotes)
+    userVotes, topTen = mostVotes(usersVotes) #returns the index of th euser with the most votes and the indexes of the top 10 voters 
 
-    userVotes = users[userVotes]
+    userVotes = users[userVotes] # gets users name
 
     topTenPeople = []
 
@@ -95,8 +95,8 @@ def graph(totalNoVotes, totalYesVotes, timesWatered, timesNotWatered, users, use
 
 
     for indexes in topTen:
-        topTenPeople.append(users[indexes])
-        topTenVotes.append(usersVotes[indexes])
+        topTenPeople.append(users[indexes]) # populates the top 10 voters names
+        topTenVotes.append(usersVotes[indexes]) # populates the top 10 users amount of votes
     print(topTenPeople)
     print(topTenVotes)
 
@@ -108,47 +108,47 @@ def graph(totalNoVotes, totalYesVotes, timesWatered, timesNotWatered, users, use
     
     sns.barplot(x=x1, y=y1, color=sns.color_palette()[0], ax=axs[0]) # Plot Barplots
     sns.barplot(x=x2, y=y2, color=sns.color_palette()[0], ax=axs[1])
-    axs[2] = plt.barh(topTenPeople, topTenVotes) # horiz user grap
+    axs[2] = plt.barh(topTenPeople, topTenVotes) # horiz user graph, seaborn doesnt support barh, this causes ALOT of issues...
 
     
 
     axs[0].set_ylabel('vote number') # Clean Y Labels
     axs[1].set_ylabel('total times')
-    plt.text(16, -3.1, "times voted accurately" ) # barh doesnt add a y label feature or x label so manually inputting text
+    plt.text(18, -3.1, "times voted" ) # barh doesnt add a y label feature or x label so manually inputting text
     #axs[2].set_ylabel('best users')
 
     max_y = max(y1)+1 # Synchronize Axes
     max_y2 = max(y2)+1
     #max_y3 = max(topTenPeople) + 1
 
-    stepy1 = []
+    stepy1 = [] # array for y step values
 
-    stepy2 = []
+    stepy2 = [] # array for y step values
 
     maxy1 = max(y1)
 
     maxy2 = max(y2)
 
-    maxtotal = 0
+    maxtotal = 0 # max total is so that we ony need one loop
 
     if maxy1 > maxy2:
-        maxtotal = maxy1
+        maxtotal = maxy1 
     else:
         maxtotal = maxy2
 
     i = 1
-    div = gcd(maxy1, maxy2)
+    div = gcd(maxy1, maxy2) # this is so the .is_integer lines work at least kinda
     for i in range(1,maxtotal):
-        y1frac = ((i  * div)/maxy1).is_integer()
-        y2frac = ((i * div)/maxy2).is_integer()
+        y1frac = ((i  * div)/maxy1).is_integer() # if its a divisor
+        y2frac = ((i * div)/maxy2).is_integer() #if it is a divisor 
 
-        if y1frac and i <= maxy1:
+        if y1frac and i <= maxy1: # add to the array if true
             stepy1.append(i)
-        if y2frac and i <= maxy2:
+        if y2frac and i <= maxy2: # add to the array if true
             stepy2.append(i)
 
-    axs[0].set_yticks(stepy1)
-    axs[1].set_yticks(stepy2)
+    axs[0].set_yticks(stepy1) # sets y step for g1
+    axs[1].set_yticks(stepy2) # sets y step for g2
 
     axs[0].set_ylim(0,max_y)
     axs[1].set_ylim(0,max_y2)
@@ -157,9 +157,7 @@ def graph(totalNoVotes, totalYesVotes, timesWatered, timesNotWatered, users, use
     plt.tight_layout() # Clean Suptitle
     fig.suptitle('Cumulative Voting Data', y=1.01)
 
-    userAcc = users[mostAccurate(usersAccuracy)]
-
- 
+    userAcc = users[mostAccurate(usersAccuracy)] # calculates more accurate voter
 
 
 
