@@ -93,7 +93,7 @@ posttext = ('Welcome back... Phil was ' + yesno + 'watered last cycle. Would you
             'The current humidity is: \n \n'+
             linesH + ' **' + str(humidInt) + '%** \n \n'+
             'You can use the following words and phrases to vote: \n \n'+
-            '**Yes vote**: yes, aye, sí, prost \n \n'+
+            '**Yes vote**: yes, yeah, aye, sí, prost \n \n'+
             '**No vote**: no, not on your nelly, nein, nyet, nope \n \n'+
             'Phil\'s life depends on you! \n \n' +
             'Phil is a **Philodendron** plant who\'s care rotuine can be found [here](https://www.thespruce.com/grow-philodendron-houseplants-1902768) but to summarize... \n \n'
