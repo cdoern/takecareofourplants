@@ -18,9 +18,9 @@ This is the code which looks at the post from the previous day, combs through us
 
 This is the script which, both after reading in the comments and watering/not watering the plant, reads in the new soil moisture and makes the daily post with updated data for the users to deliberate over for the next 24 hours.
 
-**everything below this line is no longer maintaied and might not work! the garden monitor is a simple JAR file so it will but the old reddit component relies on alot of Node.JS libraries which, at the time, were not well maintained...**
+###everything below this line is no longer maintaied and might not work! the garden monitor is a simple JAR file so it will but the old reddit component relies on alot of Node.JS libraries which, at the time, were not well maintained...
 
-# Reddit Component 
+# (old) Reddit Component 
 
 Index.js is the file for the first iteration of the project which lasted from November 2017 - May 2019. This file is a verbatim copy and paste. Copy this code into a local JS file, install the proper libraries, and input the proper keys for the reddit API and pubnub. What this does is it takes input from an arduino and raspberry pi, and takes users votes, based on this data, whether or not the plant(s) should be watered. This is the stepping stone for the more generally applicable, downloadable client based off of this project. 
 
