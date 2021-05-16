@@ -9,6 +9,7 @@ import numpy as np
 import random
 import csv
 import os.path
+from textblob import TextBlob
 
 #weather declaration and random generation
 
@@ -53,6 +54,8 @@ for submission in reddit.subreddit('takecareofourplants').hot(limit=1):
             print(comment.author.name)
             #reddit.subreddit("takecareofourplants").flair.set(comment.author.name, "Gardener Extraordinaire", css_class="gardener")
             str1 = comment.body.lower()
+            opinion = TextBlob(str1)
+            sen = opinion.sentiment
             str1 = str1.translate(str1.maketrans('', '', string.punctuation))
             str1 = ' ' + str1 + ' '
             for y, n in zip(yes, no):
@@ -68,6 +71,20 @@ for submission in reddit.subreddit('takecareofourplants').hot(limit=1):
                     comment.reply('Thanks for your vote against watering the plant! votes = ' + str(counter))
                     voterlist.append(comment.author.name)
                     writer.writerow({'user':''+str(comment.author.name), 'date': ''+str(currentDay), 'vote':'no'})
+                else:
+                    if sen < -.5:
+                        counter = counter - 1
+                        print(comment.body)
+                        comment.reply('Thanks for your vote against watering the plant! votes = ' + str(counter))
+                        voterlist.append(comment.author.name)
+                        writer.writerow({'user':''+str(comment.author.name), 'date': ''+str(currentDay), 'vote':'no'})
+                    if sen > .5:
+                        counter = counter + 1
+                        print(comment.body)
+                        comment.reply('Thanks for your vote for watering the plant! votes = ' + str(counter))
+                        voterlist.append(comment.author.name)
+                        writer.writerow({'user':''+str(comment.author.name), 'date': ''+str(currentDay), 'vote':'yes'})
+
     print(voterlist)
     subreddit.flair.update(voterlist, text="Gardener Extraordinaire", css_class="gardener")
 
