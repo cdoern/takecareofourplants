@@ -55,7 +55,7 @@ for submission in reddit.subreddit('takecareofourplants').hot(limit=1):
             #reddit.subreddit("takecareofourplants").flair.set(comment.author.name, "Gardener Extraordinaire", css_class="gardener")
             str1 = comment.body.lower()
             opinion = TextBlob(str1)
-            sen = opinion.sentiment
+            sen = opinion.sentiment.polarity
             str1 = str1.translate(str1.maketrans('', '', string.punctuation))
             str1 = ' ' + str1 + ' '
             for y, n in zip(yes, no):
