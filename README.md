@@ -18,7 +18,7 @@ This is the code which looks at the post from the previous day, combs through us
 
 This is the script which, both after reading in the comments and watering/not watering the plant, reads in the new soil moisture and makes the daily post with updated data for the users to deliberate over for the next 24 hours.
 
-###everything below this line is no longer maintaied and might not work! the garden monitor is a simple JAR file so it will but the old reddit component relies on alot of Node.JS libraries which, at the time, were not well maintained...
+### everything below this line is no longer maintaied and might not work! the garden monitor is a simple JAR file so it will but the old reddit component relies on alot of Node.JS libraries which, at the time, were not well maintained...
 
 # (old) Reddit Component 
 
