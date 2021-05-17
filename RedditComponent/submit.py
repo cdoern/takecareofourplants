@@ -96,7 +96,7 @@ posttext = ('Welcome back... Phil was ' + yesno + 'watered last cycle. Would you
             '**Yes vote**: yes, yeah, aye, sí, prost \n \n'+
             '**No vote**: no, not on your nelly, nein, nyet, nope \n \n'+
             'Phil\'s life depends on you! \n \n' +
-            'Phil is a **Philodendron** plant who\'s care rotuine can be found [here](https://www.thespruce.com/grow-philodendron-houseplants-1902768) but to summarize... \n \n'
+            'Phil is a **Philodendron** plant who\'s care routine can be found [here](https://www.thespruce.com/grow-philodendron-houseplants-1902768) but to summarize... \n \n'
             'Philodendrons prefer: \n \n'+
             '1) Medium Sunlight (not too close to the windowsill but always exposed to light) \n \n'+
             '2) The **top 2 inches of their soil to be wet**. we will have to figure out what type of watering cycle allows this... \n \n'+
