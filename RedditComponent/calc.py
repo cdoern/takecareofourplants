@@ -65,12 +65,14 @@ for submission in reddit.subreddit('takecareofourplants').hot(limit=1):
                     comment.reply('Thanks for your vote for watering the plant! votes = ' + str(counter))
                     voterlist.append(comment.author.name)
                     writer.writerow({'user':''+str(comment.author.name), 'date': ''+str(currentDay), 'vote':'yes'})
+                    break
                 if re.findall(n, str1):
                     counter = counter - 1
                     print(comment.body)
                     comment.reply('Thanks for your vote against watering the plant! votes = ' + str(counter))
                     voterlist.append(comment.author.name)
                     writer.writerow({'user':''+str(comment.author.name), 'date': ''+str(currentDay), 'vote':'no'})
+                    break
                 else:
                     if sen < -.5:
                         counter = counter - 1
