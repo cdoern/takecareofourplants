@@ -30,7 +30,7 @@ def init_output(): # relay init
 
 def water(): # plant watering
     GPIO.output(7, GPIO.LOW)
-    time.sleep(10)
+    time.sleep(30)
     GPIO.output(7, GPIO.HIGH)
     
 def main():
