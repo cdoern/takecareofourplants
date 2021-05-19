@@ -18,11 +18,11 @@ conditions = ['Wet', 'Moist', 'Normal', 'Normal', 'Dry', 'Too Dry']
 #end weather declaration and random generation
 
 #praw setup
-reddit = praw.Reddit(client_id="GROOQTDDB22yjw",
-                     client_secret="I7r3qT0jLZN90KDu6ltGGDimFEg",
-                     user_agent="plantbot",
-                     username="takecareofourplants",
-                     password="seadawg01")
+reddit = praw.Reddit(client_id="",
+                     client_secret="",
+                     user_agent="",
+                     username="",
+                     password="")
 
 subreddit = reddit.subreddit('takecareofourplants')
 
@@ -74,19 +74,20 @@ for submission in reddit.subreddit('takecareofourplants').hot(limit=1):
                     writer.writerow({'user':''+str(comment.author.name), 'date': ''+str(currentDay), 'vote':'no'})
                     break
                 else:
-                    if sen < -.5:
+                    if sen < -.25:
                         counter = counter - 1
                         print(comment.body)
                         comment.reply('Thanks for your vote against watering the plant! votes = ' + str(counter))
                         voterlist.append(comment.author.name)
                         writer.writerow({'user':''+str(comment.author.name), 'date': ''+str(currentDay), 'vote':'no'})
-                    if sen > .5:
+                        break
+                    if sen > .25:
                         counter = counter + 1
                         print(comment.body)
                         comment.reply('Thanks for your vote for watering the plant! votes = ' + str(counter))
                         voterlist.append(comment.author.name)
                         writer.writerow({'user':''+str(comment.author.name), 'date': ''+str(currentDay), 'vote':'yes'})
-
+                        break
     print(voterlist)
     subreddit.flair.update(voterlist, text="Gardener Extraordinaire", css_class="gardener")
 
