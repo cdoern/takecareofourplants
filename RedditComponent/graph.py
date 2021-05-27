@@ -82,24 +82,28 @@ def uploadImage():
 def drawGraph(x, y1, y2):
         x = pd.to_datetime(pd.Series(x)).dt.strftime('%b-%d') # Clean Up X Labels
 
-        fig, axs = plt.subplots(facecolor='w', nrows=2) # Set Up Figure and Subplots
-        
-        sns.barplot(x=x, y=y1, color=sns.color_palette()[0], ax=axs[0]) # Plot Barplots
-        sns.barplot(x=x, y=y2, color=sns.color_palette()[0], ax=axs[1])
-    	
-        axs[0].set_ylabel('Yes Votes') # Clean Y Labels
-        axs[1].set_ylabel('No Votes')
-    	
-        max_y = max(max(y1),max(y2))+1 # Synchronize Axes
-        axs[0].set_ylim(0,max_y)
-        axs[1].set_ylim(0,max_y)
+	data = pd.DataFrame([y1, y2]).transpose() # organize the data in df
+	data[2] = x
+	data.columns = ['Yes', 'No', 'date']
+	data = data.melt(id_vars=['date'])
+	data.columns = ['date', 'Vote Type', 'value']
 
-        plt.tight_layout() # Clean Suptitle
-        fig.suptitle('Weekly Voting Data', y=1.00)
-        
-        user = bestUser()
+	fig = sns.barplot(x='date', y='value', hue='Vote Type', data=data) # plot barplot
 
-        axs[0].text(0.75, max(y1)+2.5, "The user with the most votes was: u/"+user, fontsize = 10)
+	fig.set_ylabel("# Votes")
+
+	max_y = max(data.value)
+
+	fig.set_ylim(0,max_y+1)
+
+	user = bestUser()
+
+	plt.tight_layout() # clean title
+	fig.set_title('Weekly Voting Data')
+
+	fig.legend(loc='upper right') # locks legend loc to upper left
+
+	fig.text(0.25, max_y+0.5, "The user with the most votes was: u/"+user, fontsize = 10)
 
         plt.savefig('/home/pi/Documents/weeklyData.png', bbox_inches='tight') # save file
 
